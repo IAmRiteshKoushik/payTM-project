@@ -1,7 +1,7 @@
-const { JWT_SECRET } = require("./config");
-const jwt = require("jsonwebtoken");
+import { JWT_SECRET } from "../config/config";
+import jwt from "jsonwebtoken";
 
-const authMiddleware = (req, res, next) => {
+export const authMiddleware = (req, res, next) => {
     const authHeader = req.headers.authorization;
 
     if(!authHeader || !authHeader.Header.startsWith("Bearer ")){
@@ -13,7 +13,7 @@ const authMiddleware = (req, res, next) => {
         const decoded = jwt.verify(token, JWT_SECRET);
         // Post verification, append a new field to request body 
         // which would come from the decoded user
-        if (decode.userId){
+        if (decoded.userId){
             req.userId = decoded.userId;
             next();
         } else {
@@ -23,7 +23,3 @@ const authMiddleware = (req, res, next) => {
         return res.status(403).json({});
     }
 }
-
-module.exports = {
-    authMiddleware
-};
